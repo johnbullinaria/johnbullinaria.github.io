@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<TITLE>Quick Guide to javaNNS</TITLE>
+</HEAD>
+<BODY>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<H2><CENTER><FONT COLOR="#D00000">John Bullinaria's Quick Guide to <I>javaNNS</I></FONT></CENTER></H2>
+
+<p>You will generally start up <I>javaNNS</I> using the LINUX command:
+
+<p><ul><tt>javaNNS &amp;</tt></ul>
+
+<p>If this doesn't work, take a look at my 
+<A HREF="javaNNSstart.html">Getting Started with <I>javaNNS</I> page</a>.
+If all is well, you should get an interface window looking something like:
+
+<P><CENTER><IMG SRC="Initial.jpg" height="400"></CENTER>
+
+<p>The first stage is to build your neural network.  You start by getting the "Create layers" panel 
+from the "Tools" pull down menu:
+
+<P><CENTER><IMG SRC="CreateInputs.jpg" height="300"></CENTER>
+
+<p>It is sensible to create your input, hidden and output layers in that order.  The input 
+units should be linear (Act_Identity) and the hidden layer should be sigmoidal (Act_Logistic).
+The ouput units are normally sigmoidal for classification problems, and linear for regression
+problems.  Leave the output functions alone (Out_identity).  "Height" and "Width" specify the 
+number of units you require at each layer.  The display is clearest if you have Width = 1 and the
+Height set to be the number of units you want.  Leave the Layer and Subnet numbers to update themselves.
+Click on "Create" once the details of each layer is specified, and then move on to specify the next 
+layer.  Your units will appear in the display window.  
+
+<p>The next stage is to connect up the units.  You do this by getting the "Create connections" panel 
+from the "Tools" pull down menu:
+
+<P><CENTER><IMG SRC="CreateLinks.jpg" height="300"></CENTER>
+
+<p>You probably want to start with "Connect feed-forward" without short-cut connections.  Clicking on 
+"Connect" will set up the connections for you.
+
+<p>Next you need to load in your training, validation and testing data sets using the "Open" panel 
+from the "Files" pull down menu.  If you have existing correctly formatted data, they will generally 
+have the file name extension ".pat".
+
+<P>[If you have new raw data, I find the easiest way to get it into the correct format is to copy one 
+of the <a href="javaNNSexamples">example data files</a> and paste your data in the appropriate
+places.]
+
+<p>Your network is now ready to run.  To control the network, open the "Control Panel" from the "Tools"
+pull down menu.  Click on the "Patterns" tab to tell the system which file to train with and 
+which to validate with:
+
+<P><CENTER><IMG SRC="Patterns.jpg" height="250"></CENTER>
+
+<P>To see how well your network is doing during training, you can open the "Error graph"
+from the "View" pull down menu.  
+
+<P>By clicking on the "Learning" tab in the "Control Panel", you can choose your learning 
+algorithm and its parameters.   
+
+<P>Some hints: It is generally a good idea to get a feel for how standard Backpropagation behaves 
+before moving on to try more exotic learning algorithms.  The default parameters are often a
+long way from the best parameters.  If you don't know what a parameter (e.g. "dmax") does, 
+then set it to zero!  
+
+<P>The "Init" button sets the network weights to random values (from the range specified 
+under the "Initializing" tab on the "Control Panel").  
+
+<P>Finally, click on "Learn All" and watch your network learn!
+
+<P><CENTER><IMG SRC="ScreenDump.jpg" height="400"></CENTER>
+
+<P>Assuming something sensible happened, it is worth saving the details of your network
+to file using "Save" under the "File" pull down menu (with filename extension ".net").  
+This will allow you to reload your network using "Open" next time you log on, or if you mess 
+it up and want to start again, or if you crash <I>javaNNS</I> (which is surprisingly easy).  
+You will then only have to reload the training data and reset your parameters, rather
+that rebuild the whole network. 
+
+<P>Now try different values for the learning parameters and numbers of hidden units, and see 
+which values work best for your particular problem.
+
+<P>Another hint: See how much the results change simply by starting with different random
+initial weights.  Does the variability depend on the learning parameters?
+
+<P>If you have got this far, you are now ready to explore the other functionality 
+of <I>javaNNS</I> by trial and error, or using the online help.  
+
+<BR>
+<P><HR><FONT SIZE=2 FACE="Arial,Helvetica,Univers,Zurich BT,sans-serif">
+<CENTER>This page is maintained by
+<a href="../../index.html">John Bullinaria</a>.
+Last updated on 31 October 2004.
+</CENTER></FONT>
+
+</HTML>

@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+<TITLE>Neural Computation</TITLE>
+</HEAD>
+<BODY>
+
+<BODY BGCOLOR="#FFFFFF">
+<FONT COLOR="#D00000">
+<H1 ALIGN=CENTER>Introduction to Neural Computation (Level 4/M)</H1>
+<H1 ALIGN=CENTER>Neural Computation (Level 3/H)</H1>
+<H2 ALIGN=CENTER><a href="index.html">Dr John A. Bullinaria</a></H2>
+</FONT>
+<P>
+<P ALIGN="CENTER"><A HREF="mailto:j.a.bullinaria@cs.bham.ac.uk">j.a.bullinaria@cs.bham.ac.uk</A></P>
+
+<P><HR>
+<P><H3 ALIGN=CENTER>I no longer teach this module, but this web-page is now sufficiently widely used 
+that I will leave it in place. It contains all the slides, handouts and exercise sheets used in the 
+lectures, details about the continuous assessment and examination, and so on, for the academic year 2015/16.
+<P>
+
+<!--
+<P><HR>
+<P><H3 ALIGN=CENTER>If you are thinking about registering for one of these modules, the slides for 
+Lecture 1 below will give you a good indication of what it involves.  
+You should pay particular attention to the comments on page 7 about how mathematical it is!</H3>
+<P>
+-->
+
+<P><HR>
+
+<h3><font COLOR="#D00000">Module Outline</font></h3>
+
+<P>This module introduces the basic concepts and techniques of neural computation, and its relation to 
+automated learning in computing machines more generally. It covers the main types of formal neuron 
+and their relation to neurobiology, showing how to construct large neural networks and study their 
+learning and generalization abilities in the context of practical applications. 
+The Level 4/M version also provides practical experience of designing and implementing a neural 
+network for a real world application. 
+
+<h3><font COLOR="#D00000">Lecture Timetable and Handouts</font></h3>
+
+<P>Here's an outline of the module structure and lecture timetable.  All the module handouts will be made
+available here as pdf files shortly before the paper versions are distributed in the lectures.  
+Any spare paper copies will be deposited in the School library.  
+
+<!--
+<P>I will leave last year's notes in place, marked "[2014pdf]", until they are replaced by this year's notes, 
+marked "[pdf]".
+-->
+
+
+<P><TABLE BORDER="1" BGCOLOR="#FFFFCC" WIDTH=100%>
+<TR><TH WIDTH="6%" VALIGN="MIDDLE" BGCOLOR="#99CCFF">
+	Week</TH>
+	<TH WIDTH="47%" VALIGN="MIDDLE" BGCOLOR="#99CCFF">
+	Lecture 1 <BR><FONT COLOR="RED">Tuesdays 5pm-6pm</FONT>
+	</TH><TH WIDTH="47%" VALIGN="MIDDLE" BGCOLOR="#99CCFF">
+	Lecture 2 <BR><FONT COLOR="RED">Thursdays 12noon-1pm</FONT>
+</TH></TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">1</TD>
+<TD>Introduction to Neural Networks and their History
+<a href="INC/l1.pdf">[pdf]</a></TD>
+<TD>Biological Neurons and Neural Networks, Artificial Neurons
+<a href="INC/l2.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">2</TD>
+<TD>Networks of Artificial Neurons, Single Layer Perceptrons
+<a href="INC/l3.pdf">[pdf]</a></TD>
+<TD>Learning and Generalization in Single Layer Perceptrons
+<a href="INC/l4.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">3</TD>
+<TD>Hebbian Learning, Gradient Descent Learning
+<a href="INC/l5.pdf">[pdf]</a></TD>
+<TD>The Generalized Delta Rule, Practical Considerations
+<a href="INC/l6.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">4</TD>
+<TD>Learning in Multi-Layer Perceptrons - Back-Propagation
+<a href="INC/l7.pdf">[pdf]</a></TD>
+<TD>Learning with Momentum, Conjugate Gradient Learning
+<a href="INC/l8.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">5</TD>
+<TD>Bias and Variance - Under-Fitting and Over-Fitting
+<a href="INC/l9.pdf">[pdf]</a></TD>
+<TD>Improving Generalization
+<a href="INC/l10.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">6</TD>
+<TD>Applications of Multi-Layer Perceptrons
+<a href="INC/l11.pdf">[pdf]</a></TD>
+<TD><FONT COLOR=GREEN>Exercise Session</FONT>
+<a href="INC/CA.html">[html]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">7</TD>
+<TD>Recurrent Neural Networks
+<a href="INC/l12.pdf">[pdf]</a></TD>
+<TD>Radial Basis Function Networks: Introduction
+<a href="INC/l13.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">8</TD>
+<TD>Radial Basis Function Networks: Algorithms
+<a href="INC/l14.pdf">[pdf]</a></TD>
+<TD>Radial Basis Function Networks: Applications
+<a href="INC/l15.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">9</TD>
+<TD>Self Organizing Maps: Fundamentals
+<a href="INC/l16.pdf">[pdf]</a></TD>
+<TD>Self Organizing Maps: Properties and Applications
+<a href="INC/l17.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">10</TD>
+<TD>Learning Vector Quantization
+<a href="INC/l18.pdf">[pdf]</a></TD>
+<TD>Committee Machines
+<a href="INC/l19.pdf">[pdf]</a></TD>
+</TR>
+
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">11</TD>
+<TD>Model Selection and Evolutionary Optimization
+<a href="INC/l20.pdf">[pdf]</a></TD>
+<TD><FONT COLOR=GREEN>Exercise Session</FONT>
+<a href="INC/x.pdf"></a></TD>
+</TR>
+
+</TABLE></P>
+
+
+<TABLE BORDER="1" BGCOLOR="#FFFFCC" WIDTH=100%>
+<TR>
+<TD ALIGN="CENTER" WIDTH="6%">12</TD>
+<TD ALIGN="CENTER" WIDTH="94%">Revision Lecture Covering the Whole Module 
+<a href="INC/lR.pdf">[pdf]</a></TD>
+</TR>
+</TABLE></P>
+
+
+<h3><font COLOR="#D00000">Aims, Learning Outcomes and Assessment</font></h3>
+
+<P>For formal details about the aims, learning outcomes and assessment you should look at the official 
+Module Description
+(<a href="http://www.cs.bham.ac.uk/internal/modules/2015/06-12412/mds">Level 4/M</a>
+or <a href="http://www.cs.bham.ac.uk/internal/modules/2015/06-20416/mds">Level 3/H</a>)
+and Syllabus
+(<a href="http://www.cs.bham.ac.uk/internal/modules/2015/06-12412/">Level 4/M</a>
+or <a href="http://www.cs.bham.ac.uk/internal/modules/2015/06-20416/">Level 3/H</a>)
+
+<P>The Level 3 module <i>Neural Computation</i> is assessed by 100% Examination.
+
+<P>The Level 4 module <i>Introduction Neural Computation</i> is assessed by 80% Examination and 20% 
+<a href="INC/CA.html">Continuous Assessment</a>.
+<!--
+Continuous Assessment. 
+-->
+
+<P>In both cases the examination will be closed book, and you will be expected to answer all four 
+questions which will each be worth 25% of the total. 
+
+<P>The Continuous Assessment for the Level 4 module <i>Introduction Neural Computation</i> will
+be distributed and discussed in the Thursday lecture of week 6, and the deadline will be
+12noon on the Wednesday of week 1 in the Spring Term.  Full details will also be published
+here and on Canvas in week 6.
+	
+<P>A series of Exercise Sheets, largely based on recent examination questions, will give an 
+idea of the standard and type of questions you can expect in this year's examination.  These
+will be distributed when the associated material has been covered in the lectures.  They do not 
+contribute to the assessment for the module.  They are designed to help you monitor your progress 
+on the module - try to answer the questions without your notes, and then use your notes to see
+whether your answers are correct.  The Exercise Sessions will be used to talk through answers 
+to any questions you have difficulty with.
+All six Exercise Sheets have now been distributed: 
+<a href="INC/ex1.pdf">Exercise Sheet 1</a>,
+<a href="INC/ex2.pdf">Exercise Sheet 2</a>,
+<a href="INC/ex3.pdf">Exercise Sheet 3</a>,
+<a href="INC/ex4.pdf">Exercise Sheet 4</a>,
+<a href="INC/ex5.pdf">Exercise Sheet 5</a> and
+<a href="INC/ex6.pdf">Exercise Sheet 6</a>.
+
+<!--
+So far, none have been distributed. 
+So far, only the first one has been distributed: 
+<a href="INC/ex1.pdf">Exercise Sheet 1</a>.
+So far, the first five have been distributed: 
+<a href="INC/ex1.pdf">Exercise Sheet 1</a>,
+<a href="INC/ex2.pdf">Exercise Sheet 2</a>,
+<a href="INC/ex3.pdf">Exercise Sheet 3</a>,
+<a href="INC/ex4.pdf">Exercise Sheet 4</a> and
+<a href="INC/ex5.pdf">Exercise Sheet 5</a>.
+-->
+
+<P>The examination papers for the last six years show what the exam paper will look like, but be 
+aware that the module content does change slightly each year:
+<a href="INC/Exam2010.pdf">2010</a>.
+<a href="INC/Exam2011.pdf">2011</a>,
+<a href="INC/Exam2012.pdf">2012</a>,
+<a href="INC/Exam2013.pdf">2013</a>,
+<a href="INC/Exam2014.pdf">2014</a> and
+<a href="INC/Exam2015.pdf">2015</a>.
+
+
+<P>I have also produced an <a href="INC/equations.pdf">Important Equations Sheet</a>
+which contains the main equations that you should be familiar with from the module.  
+<!--
+-->
+
+
+<h3><font COLOR="#D00000">Recommended Books and Links</font></h3>
+
+<P>The Recommended Books for this module are:
+<P><TABLE BORDER="1" BGCOLOR="#FFFFCC" WIDTH=100%>
+<tr>
+<th bgcolor="#99CCFF" valign="TOP" width="35%">Title</th>
+<th bgcolor="#99CCFF" valign="TOP" width="20%">Author(s)</th>
+<th bgcolor="#99CCFF" valign="TOP" width="20%">Publisher, Date</th>
+<th bgcolor="#99CCFF" valign="TOP" width="25%">Comments</th>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Neural Networks and Learning Machines</td>
+<td valign="TOP" width="20%">Simon Haykin</td>
+<td valign="TOP" width="20%">Pearson, 2009</td>
+<td valign="TOP" width="25%">Very comprehensive, but heavy in mathematics.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Neural Networks: A Comprehensive Foundation</td>
+<td valign="TOP" width="20%">Simon Haykin</td>
+<td valign="TOP" width="20%">Prentice Hall, 1999</td>
+<td valign="TOP" width="25%">Older edition of the above book, but still covers the whole module.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Neural Networks for Pattern Recognition</td>
+<td valign="TOP" width="20%">Christopher Bishop</td>
+<td valign="TOP" width="20%">Clarendon Press, Oxford, 1995</td>
+<td valign="TOP" width="25%">This is the book I always use, but it doesn't cover the whole module.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">The Essence of Neural Networks</td>
+<td valign="TOP" width="20%">Robert Callan</td>
+<td valign="TOP" width="20%">Prentice Hall Europe, 1999</td>
+<td valign="TOP" width="25%">Concise introductory text.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">An Introduction to Neural Networks</td>
+<td valign="TOP" width="20%">Kevin Gurney</td>
+<td valign="TOP" width="20%">Routledge, 1997</td>
+<td valign="TOP" width="25%">Non-mathematical introduction.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Fundamentals of Neural Networks</td>
+<td valign="TOP" width="20%">Laurene Fausett</td>
+<td valign="TOP" width="20%">Prentice Hall, 1994</td>
+<td valign="TOP" width="25%">Good intermediate text.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Introduction to Neural Networks</td>
+<td valign="TOP" width="20%">R. Beale &amp; T. Jackson</td>
+<td valign="TOP" width="20%">IOP Publishing, 1990</td>
+<td valign="TOP" width="25%">Introductory text.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">An Introduction to the Theory of Neural Computation</td>
+<td valign="TOP" width="20%">J. Hertz, A. Krogh &amp; R.G. Palmer</td>
+<td valign="TOP" width="20%">Addison Wesley, 1991</td>
+<td valign="TOP" width="25%">Good all round book.  Slightly mathematical.</td>
+</tr>
+<tr>
+<td valign="TOP" width="35%">Principles of Neurocomputing for Science and Engineering</td>
+<td valign="TOP" width="20%">F. M. Ham &amp; I. Kostanic</td>
+<td valign="TOP" width="20%">McGraw Hill, 2001</td>
+<td valign="TOP" width="25%">Good advanced book, but rather mathematical.</td>
+</tr>
+</table>
+
+<P>If you can only afford to buy one book for this module, I would recommend getting either of the Haykin books.
+
+<P>If you want to find online information about Neural Networks, probably the best places to start are:
+<a href="ftp://ftp.sas.com/pub/neural/FAQ.html">The Neural Networks FAQ</a> web-site, and the
+<a href="http://lcn.epfl.ch/tutorial/english/weblinks.html">Neural Network Resources</a> web-site,
+both of which are rather old now, but still contain a large range of information and links about 
+all aspects of neural networks.
+
+<P>When programming your own MLP neural networks, it may be useful to start with my
+<A HREF="INC/nn.html">Step by Step Guide to Implementing a Simple Neural Network in C</A>.
+It should be fairly straightforward to see how to use it with related programming languages such as C++ and Java. 
+
+<BR>
+<P><HR><FONT SIZE=2 FACE="Arial,Helvetica,Univers,Zurich BT,sans-serif">
+<CENTER>This page is maintained by
+<a href="index.html">John Bullinaria</a>.
+Last updated on 23 August 2016.
+</CENTER></FONT>
+
+</HTML>

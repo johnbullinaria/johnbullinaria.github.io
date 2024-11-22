@@ -1,0 +1,401 @@
+<HTML>
+<HEAD>
+ <TITLE>Implementing a Neural Network in C</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<FONT SIZE=3 FACE="Arial,Helvetica,Univers,Zurich BT,sans-serif">
+
+<H2 ALIGN=CENTER><FONT COLOR="#D00000">John Bullinaria's Step by Step Guide to Implementing a Neural Network in C</FONT></H2>
+
+<H4 ALIGN=CENTER>By <A HREF="../index.html">John A. Bullinaria</a> from the
+<A HREF="http://www.cs.bham.ac.uk/">School of Computer Science</A> of 
+<A HREF="http://www.bham.ac.uk/">The University of Birmingham, UK</A>. </CENTER></H4>
+
+<H4 ALIGN=CENTER><A HREF="../INC/nn.html">CLICK HERE FOR THE MOST RECENT VERSION OF THIS PAGE</A>
+</CENTER></H4>
+
+<P>This document contains a step by step guide to implementing a simple neural network in C.  It 
+is aimed mainly at students who wish to (or have been told to) incorporate a neural network learning 
+component into a larger system they are building.  Obviously there are many types of neural network 
+one could consider using - here I shall concentrate on one particularly common and useful type, 
+namely a simple three-layer feed-forward back-propagation network (multi layer perceptron).  
+
+<P>This type of network will be useful when we have a set of input vectors and a corresponding set 
+of output vectors, and our system must produce an appropriate output for each input it is given.  
+Of course, if we already have a complete noise-free set of input and output vectors, then a simple 
+look-up table would suffice.  However, if we want the system to <i>generalize</i>, i.e. produce 
+appropriate outputs for inputs it has never seen before, then a neural network that has <i>learned</i> 
+how to map between the known inputs and outputs (i.e. our training set) will often do a pretty good 
+job for new inputs as well.  
+
+<P> I shall assume that the reader is already familiar with C, and, for more details about neural 
+networks in general, simply refer the reader to the newsgroup <i>comp.ai.neural-nets</i> and the 
+associated <A HREF="ftp://ftp.sas.com/pub/neural/FAQ.html">Neural Networks FAQ</A>.  So, let us 
+begin...
+
+<P>A single neuron (i.e. processing unit) takes it total input <i>In</i> and produces an output 
+activation <i>Out</i>.  I shall take this to be the sigmoid function
+
+<P><ul>Out = 1.0/(1.0 + exp(-In));
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* Out = Sigmoid(In) */</FONT><BR></ul>
+
+<P>though other activation functions are often used (e.g. linear or hyperbolic tangent).  This 
+has the effect of squashing the infinite range of <i>In</i> into the range 0 to 1.  It also has 
+the convenient property that its derivative takes the particularly simple form
+
+<P><ul>Sigmoid_Derivative = Sigmoid * (1.0 - Sigmoid) ;<BR></ul>
+
+Typically, the input <i>In</i> into a given neuron will be the weighted sum of output activations 
+feeding in from a number of other neurons.  It is convenient to think of the activations flowing 
+through layers of neurons.  So, if there are <i>NumUnits1</i> neurons in layer 1, the total 
+activation flowing into our layer 2 neuron is just the sum over <i>Layer1Out[i]*Weight[i]</i>, 
+where <i>Weight[i]</i> is the strength/weight of the connection between unit <i>i</i> in layer 1 
+and our unit in layer 2. Each neuron will also have a bias, or resting state, that is added to 
+the sum of inputs, and it is convenient to call this <i>weight[0]</i>.  We can then write
+
+<P><ul>
+Layer2In = Weight[0] ;
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* start with the bias */</FONT><BR>
+for( i = 1 ; i &lt;= NumUnits1 ; i++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* i loop over layer 1 units */</FONT><BR>
+<ul>Layer2In += Layer1Out[i] * Weight[i] ;<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* add in weighted contributions from layer 1 */</FONT></ul>
+}<BR>
+Layer2Out = 1.0/(1.0 + exp(-Layer2In)) ;
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;/* compute sigmoid to give activation */</FONT><BR>
+</ul>
+
+<P>Normally layer 2 will have many units as well, so it is appropriate to write the weights 
+between unit <i>i</i> in layer 1 and unit <i>j</i> in layer 2 as an array<i> Weight[i][j]</i>.  
+Thus to get the output of unit  <i>j</i> in layer 2 we have
+
+<P><math><ul>
+Layer2In[j] = Weight[0][j] ;<BR>
+for( i = 1 ; i &lt;= NumUnits1 ; i++ ) {<BR>
+<ul>Layer2In[j] += Layer1Out[i] * Weight[i][j] ;<BR></ul>
+}<BR>
+Layer2Out[j] = 1.0/(1.0 + exp(-Layer2In[j])) ;<BR></ul></math>
+
+Remember that in C the array indices start from zero, not one, so we would declare our variables as
+
+<P><math><ul>double Layer1Out[NumUnits1+1] ;<BR>
+double Layer2In[NumUnits2+1] ;<BR>
+double Layer2Out[NumUnits2+1] ;<BR>
+double Weight[NumUnits1+1][NumUnits2+1] ;<BR>
+</ul></math>
+
+(or, more likely, declare pointers and use <i>calloc</i> or <i>malloc</i> to allocate the memory).  
+Naturally, we need another loop to get all the layer 2 outputs
+
+<P><math><ul>
+for( j = 1 ; j &lt;= NumUnits2 ; j++ ) {<BR>
+<ul>Layer2In[j] = Weight[0][j] ;<BR>
+    for( i = 1 ; i &lt;= NumUnits1 ; i++ ) {<BR>
+    <ul>Layer2In[j] += Layer1Out[i] * Weight[i][j] ;<BR></ul>
+    }<BR>
+    Layer2Out[j] = 1.0/(1.0 + exp(-Layer2In[j])) ;<BR></ul>
+}
+</ul></math>
+
+<P>Three layer networks are necessary and sufficient for most purposes, so our layer 2 outputs 
+feed into a third layer in the same way as above
+
+<P><math><ul>
+for( j = 1 ; j &lt;= NumUnits2 ; j++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* j loop computes layer 2 activations */</FONT><BR>
+<ul>Layer2In[j] = Weight12[0][j] ;<BR>
+    for( i = 1 ; i &lt;= NumUnits1 ; i++ ) {<BR>
+    <ul>Layer2In[j] += Layer1Out[i] * Weight12[i][j] ;<BR></ul>
+}<BR>
+Layer2Out[j] = 1.0/(1.0 + exp(-Layer2In[j])) ;<BR></ul>
+}<BR>
+for( k = 1 ; k &lt;= NumUnits3 ; k++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* k loop computes layer 3 activations */</FONT><BR>
+<ul>Layer3In[k] = Weight23[0][k] ;<BR>
+    for( j = 1 ; j &lt;= NumUnits2 ; j++ ) {<BR>
+    <ul>Layer3In[k] += Layer2Out[j] * Weight23[j][k] ;<BR></ul>
+    }<BR>
+    Layer3Out[k] = 1.0/(1.0 + exp(-Layer3In[k])) ;<BR></ul>
+}
+</ul></math>
+
+<P>The code can start to become confusing at this point - I find that keeping a separate 
+index <i>i, j, k</i> for each layer helps, as does an intuitive notation for distinguishing 
+between the different layers of weights <i>Weight12</i> and <i>Weight23</i>.  For obvious 
+reasons, for three layer networks, it is traditional to call layer 1 the <i>Input</i> layer, 
+layer 2 the <i>Hidden</i> layer, and layer 3 the <i>Output</i> layer.  
+Our network thus takes on the familiar form that we shall use for the rest of this document
+
+<P><CENTER> <IMG  SRC="nn.gif"></CENTER>
+
+<P>Also, to save getting all the <i>In</i>'s and <i>Out</i>'s confused, we can write 
+<i>LayerNIn</i> as <i>SumN</i>.  Our code can thus be written
+
+<P><math><ul>
+for( j = 1 ; j &lt;= NumHidden ; j++ ) { 
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* j loop computes hidden unit activations */</FONT><BR>
+<ul>SumH[j] = WeightIH[0][j] ;<BR>
+    for( i = 1 ; i &lt;= NumInput ; i++ ) {<BR>
+    <ul>SumH[j] += Input[i] * WeightIH[i][j] ;<BR></ul>
+    }<BR>
+    Hidden[j] = 1.0/(1.0 + exp(-SumH[j])) ;<BR></ul>
+}<BR>
+for( k = 1 ; k &lt;= NumOutput ; k++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* k loop computes output unit activations */</FONT>
+<ul>SumO[k] = WeightHO[0][k] ;<BR>
+    for( j = 1 ; j &lt;= NumHidden ; j++ ) {<BR>
+    <ul>SumO[k] += Hidden[j] * WeightHO[j][k] ;<BR></ul>
+    }<BR>
+    Output[k] = 1.0/(1.0 + exp(-SumO[k])) ;<BR></ul>
+}
+</ul></math>
+
+<P>Generally we will have a whole set of <i>NumPattern</i> training patterns, i.e. pairs 
+of input and target output vectors,
+
+<P><ul>Input[p][i] , Target[p][k]</ul>
+
+<P>labelled by the index <i>p</i>. The network learns by minimizing some measure of the error 
+of the network's actual outputs compared with the target outputs.  For example, the sum squared 
+error over all output units <i>k</i> and all training patterns <i>p</i> will be given by
+
+<P><math><ul>Error = 0.0 ;<BR>
+for( p = 1 ; p &lt;= NumPattern ; p++ ) {<BR>
+<ul>for( k = 1 ; k &lt;= NumOutput ; k++ ) {<BR>
+    <ul>Error += 0.5 * (Target[p][k] - Output[p][k]) * (Target[p][k] - Output[p][k]) ;<BR></ul>
+    }<BR></ul>
+}
+</ul></math>
+
+<P>(The factor of 0.5 is conventionally included to simplify the algebra in deriving 
+the learning algorithm.) If we insert the above code for computing the network outputs 
+into the <i>p</i> loop of this, we end up with
+
+<P><math><ul>Error = 0.0 ;<BR>
+for( p = 1 ; p &lt;= NumPattern ; p++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* p loop over training patterns */</FONT><BR>
+<ul>for( j = 1 ; j &lt;= NumHidden ; j++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* j loop over hidden units */</FONT><BR>
+<ul>SumH[p][j] = WeightIH[0][j] ;<BR>
+    for( i = 1 ; i &lt;= NumInput ; i++ ) {<BR>
+    <ul>SumH[p][j] += Input[p][i] * WeightIH[i][j] ;<BR></ul>
+    }<BR>
+    Hidden[p][j] = 1.0/(1.0 + exp(-SumH[p][j])) ;<BR></ul>
+}<BR>
+for( k = 1 ; k &lt;= NumOutput ; k++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* k loop over output units */</FONT><BR>
+<ul>SumO[p][k] = WeightHO[0][k] ;<BR>
+    for( j = 1 ; j &lt;= NumHidden ; j++ ) {<BR>
+    <ul>SumO[p][k] += Hidden[p][j] * WeightHO[j][k] ;<BR></ul>
+    }<BR>
+    Output[p][k] = 1.0/(1.0 + exp(-SumO[p][k])) ;<BR>
+    Error += 0.5 * (Target[p][k] - Output[p][k]) * (Target[p][k] - Output[p][k]) ;
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;/* Sum Squared Error */</FONT><BR></ul>
+    }<BR></ul>
+}<BR></ul>
+
+<P>I'll leave the reader to dispense with any indices that they don't need for the 
+purposes of their own system (e.g. the indices on <i>SumH</i> and <i>SumO</i>).  
+
+<P>The next stage is to iteratively adjust the weights to minimize the network's 
+error.  A standard way to do this is by 'gradient descent' on the error function.  
+We can compute how much the error is changed by a small change in each weight (i.e. 
+compute the partial derivatives d<i>Error</i>/d<i>Weight</i>) and shift the weights 
+by a small amount in the direction that reduces the error.  The literature is full 
+of variations on this general approach - I shall begin with the 'standard on-line 
+back-propagation with momentum' algorithm.  This is not the place to go through 
+all the mathematics, but for the above sum squared error we can compute and apply 
+one iteration (or '<i>epoch</i>') of the required weight changes <i>DeltaWeightIH</i> 
+and <i>DeltaWeightHO</i> using
+
+<P><math><ul>Error = 0.0 ;<BR>
+for( p = 1 ; p &lt;= NumPattern ; p++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* repeat for all the training patterns */</FONT><BR>
+<ul>for( j = 1 ; j &lt;= NumHidden ; j++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* compute hidden unit activations */</FONT><BR>
+    <ul>SumH[p][j] = WeightIH[0][j] ;<BR>
+        for( i = 1 ; i &lt;= NumInput ; i++ ) {<BR>
+        <ul>SumH[p][j] += Input[p][i] * WeightIH[i][j] ;<BR></ul>
+        }<BR>
+        Hidden[p][j] = 1.0/(1.0 + exp(-SumH[p][j])) ;<BR></ul>
+    }<BR>
+    for( k = 1 ; k &lt;= NumOutput ; k++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* compute output unit activations and errors */</FONT><BR>
+    <ul>SumO[p][k] = WeightHO[0][k] ;<BR>
+        for( j = 1 ; j &lt;= NumHidden ; j++ ) {<BR>
+        <ul>SumO[p][k] += Hidden[p][j] * WeightHO[j][k] ;<BR></ul>
+        }<BR>
+        Output[p][k] = 1.0/(1.0 + exp(-SumO[p][k])) ;<BR>
+        Error += 0.5 * (Target[p][k] - Output[p][k]) * (Target[p][k] - Output[p][k]) ;<BR>
+        DeltaO[k] = (Target[p][k] - Output[p][k]) * Output[p][k] * (1.0 - Output[p][k]) ;<BR></ul>
+    }<BR>
+    for( j = 1 ; j &lt;= NumHidden ; j++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* 'back-propagate' errors to hidden layer */</FONT><BR>
+    <ul>SumDOW[j] = 0.0 ;<BR>
+        for( k = 1 ; k &lt;= NumOutput ; k++ ) {<BR>
+        <ul>SumDOW[j] += WeightHO[j][k] * DeltaO[k] ;<BR></ul>
+        }<BR>
+        DeltaH[j] = SumDOW[j] * Hidden[p][j] * (1.0 - Hidden[p][j]) ;<BR></ul>
+    }<BR>
+    for( j = 1 ; j &lt;= NumHidden ; j++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* update weights WeightIH */</FONT><BR>
+    <ul>DeltaWeightIH[0][j] = eta * DeltaH[j] + alpha * DeltaWeightIH[0][j] ;<BR>
+        WeightIH[0][j] += DeltaWeightIH[0][j] ;<BR>
+        for( i = 1 ; i &lt;= NumInput ; i++ ) {
+        <ul>DeltaWeightIH[i][j] = eta * Input[p][i] * DeltaH[j] + alpha * DeltaWeightIH[i][j];<BR>
+            WeightIH[i][j] += DeltaWeightIH[i][j] ;<BR></ul>
+        }<BR></ul>
+    }<BR>
+    for( k = 1 ; k &lt;= NumOutput ; k ++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* update weights WeightHO */</FONT><BR>
+    <ul>DeltaWeightHO[0][k] = eta * DeltaO[k] + alpha * DeltaWeightHO[0][k] ;<BR>
+        WeightHO[0][k] += DeltaWeightHO[0][k] ;<BR>
+        for( j = 1 ; j &lt;= NumHidden ; j++ ) {<BR>
+        <ul>DeltaWeightHO[j][k] = eta * Hidden[p][j] * DeltaO[k] + alpha * DeltaWeightHO[j][k] ;<BR>
+            WeightHO[j][k] += DeltaWeightHO[j][k] ;<BR></ul>
+        }<BR></ul>
+    }<BR></ul>
+}<BR></ul><math>
+
+<P>(There is clearly plenty of scope for re-ordering, combining and simplifying the 
+loops here - I will leave that for the reader to do once they have understood what 
+the separate code sections are doing.)  The weight changes <i>DeltaWeightIH</i> and 
+<i>DeltaWeightHO</i> are each made up of two components.  First, the <i>eta</i> 
+component that is the gradient descent contribution.  Second, the <i>alpha</i> 
+component that is a 'momentum' term which effectively keeps a moving average of the 
+gradient descent weight change contributions, and thus smoothes out the overall 
+weight changes.  Fixing good values of the learning parameters <i>eta</i> and 
+<i>alpha</i> is usually a matter of trial and error.  Certainly <i>alpha</i> must 
+be in the range 0 to 1, and a non-zero value does usually speed up learning.  
+Finding a good value for <i>eta</i> will depend on the problem, and also on the 
+value chosen for <i>alpha</i>.  If it is set too low, the training will be 
+unnecessarily slow.  Having it too large will cause the weight changes to oscillate 
+wildly, and can slow down or even prevent learning altogether.  (I generally 
+start by trying <i>eta</i> = 0.1 and explore the effects of repeatedly doubling 
+or halving it.)  
+
+<P>The complete training process will consist of repeating the above weight updates 
+for a number of epochs (using another <i>for</i> loop) until some error crierion is 
+met, for example the <i>Error</i> falls below some chosen small number.  (Note that, 
+with sigmoids on the outputs, the <i>Error</i> can only reach exactly zero if the 
+weights reach infinity!  Note also that sometimes the training can get stuck in a 
+'local minimum' of the error function and never get anywhere the actual minimum.) 
+So, we need to wrap the last block of code in something like
+
+<P><math><ul>
+for( epoch = 1 ; epoch &lt; LARGENUMBER ; epoch++ ) {
+<ul><FONT COLOR="#D00000">/* ABOVE CODE FOR ONE ITERATION */</FONT><BR>
+    if( Error &lt; SMALLNUMBER ) break ;<BR></ul>
+}<BR></ul><math>
+
+<P>If the training patterns are presented in the same systematic order during each 
+epoch, it is possible for weight oscillations to occur.  It is therefore generally 
+a good idea to use a new random order for the training patterns for each epoch.  If 
+we put the <i>NumPattern</i> training pattern indices <i>p</i> in random order into 
+an array <i>ranpat[]</i>, then it is simply a matter of replacing our training 
+pattern loop
+
+<P><math>
+    <ul>for( p = 1 ; p &lt;= NumPattern ; p++ ) {<BR></ul>
+</math>
+
+<P>with
+
+<P><math>
+    <ul>for( np = 1 ; np &lt;= NumPattern ; np++ ) {<BR>
+        <ul>p = ranpat[np] ;<BR></ul></ul>
+</math>
+
+<P>Generating the random array <i>ranpat[]</i> is not quite so simple, but the 
+following code will do the job
+
+<P><math>
+    <ul>for( p = 1 ; p &lt;= NumPattern ; p++ ) {
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* set up ordered array */</FONT><BR>
+	<ul>ranpat[p] = p ;<BR></ul>
+        }<BR>
+	for( p = 1 ; p &lt;= NumPattern ; p++) {   
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* swap random elements into each position */</FONT><BR>
+	<ul>np = p + rando() * ( NumPattern + 1 - p ) ;<BR>
+	    op = ranpat[p] ; ranpat[p] = ranpat[np] ; ranpat[np] = op ;<BR></ul>
+	}<BR></ul>
+</math>
+
+<P>Naturally, one must set some initial network weights to start the learning 
+process.  Starting all the weights at zero is generally not a good idea, as that 
+is often a local minimum of the error function.  It is normal to initialize all 
+the weights with small random values.  If <i>rando()</i> is your favourite random 
+number generator function that returns a flat distribution of random numbers in 
+the range 0 to 1, and <i>smallwt</i> is the maximum absolute size of your initial 
+weights, then an appropriate section of weight initialization code would be
+
+<P><math>
+<ul>for( j = 1 ; j &lt;= NumHidden ; j++ ) {    
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* initialize WeightIH and DeltaWeightIH */</FONT><BR>
+    <ul>for( i = 0 ; i &lt;= NumInput ; i++ ) { <BR>
+        <ul>DeltaWeightIH[i][j] = 0.0 ;<BR>
+             WeightIH[i][j] = 2.0 * ( rando() - 0.5 ) * smallwt ;<BR></ul>
+         }<BR></ul>
+     }<BR>
+     for( k = 1 ; k &lt;= NumOutput ; k ++ ) {    
+<FONT COLOR="#D00000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* initialize WeightHO and DeltaWeightHO */</FONT><BR>
+     <ul>for( j = 0 ; j &lt;= NumHidden ; j++ ) {<BR>
+         <ul>DeltaWeightHO[j][k] = 0.0 ;<BR>              
+             WeightHO[j][k] = 2.0 * ( rando() - 0.5 ) * smallwt ;<BR></ul>
+         }<BR></ul>
+     }<BR></ul>
+</math>
+
+<P>Note, that it is a good idea to set all the initial <i>DeltaWeights</i> to 
+zero at the same time.
+
+<P>We now have enough code to put together a working neural network program.  I 
+have cut and pasted the above code into the file <A HREF="http://www.cs.bham.ac.uk/~jxb/NN/nn.c">nn.c</A> 
+(which your browser should allow you to save into your own file space).  I have 
+added the standard #includes, declared all the variables, hard coded the standard 
+XOR training data and values for <i>eta</i>, <i>alpha</i> and <i>smallwt</i>, #defined 
+an over simple <i>rando()</i>, added some print statements to show what the network 
+is doing, and wrapped the whole lot in a <i>main(){ }</i>.  The file should compile 
+and run in the normal way (e.g. using the UNIX commands 'cc nn.c -O -lm -o nn' and 'nn').
+
+<P>I've left plenty for the reader to do to convert this into a useful program, for example:
+
+<ul>
+<li>Read the training data from file</li>
+<li>Allow the parameters (<i>eta</i>, <i>alpha</i>, <i>smallwt</i>, <i>NumHidden</i>, etc.) to be varied during runtime</li>
+<li>Have appropriate array sizes determined and allocate them memory during runtime</li>
+<li>Saving of weights to file, and reading them back in again</li>
+<li>Plotting of errors, output activations, etc. during training</li>
+</ul>
+
+<P>There are also numerous network variations that could be implemented, for example:
+
+<ul>
+<li>Batch learning, rather than on-line learning</li>
+<li>Alternative activation functions (linear, tanh, etc.)</li>
+<li>Real (rather than binary) valued outputs require linear output functions</li>
+<math>
+<ul>Output[p][k] = SumO[p][k] ;<BR></ul>
+<ul>DeltaO[k] = Target[p][k] - Output[p][k] ;<BR></ul>
+</math>
+<li>Cross-Entropy cost function rather than Sum Squared Error</li>
+<math>
+<ul>Error -= ( Target[p][k] * log( Output[p][k] ) + ( 1.0 - Target[p][k] ) * log( 1.0 - Output[p][k] ) ) ;<BR></ul>
+<ul>DeltaO[k] = Target[p][k] - Output[p][k] ;<BR></ul>
+</math>
+<li>Separate training, validation and testing sets</li>
+<li>Weight decay / Regularization</li>
+</ul>
+
+But from here on, you're on your own.  I hope you found this page useful...
+
+<P></FONT><HR>
+
+<FONT SIZE=2 FACE="Arial,Helvetica,Univers,Zurich BT,sans-serif"><CENTER>This page is maintained by
+<A HREF="../index.html">John Bullinaria</a>.
+Last updated on 18 November 2002.
+</CENTER></FONT>
+
+</BODY>
+</HTML>
